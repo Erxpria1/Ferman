@@ -47,7 +47,7 @@ const TaskCard = ({ task, onClick, isDragging }) => {
         {/* Task Content */}
         <div className="flex-1">
           <div className="flex items-start gap-2 mb-2">
-            <span className="text-2xl">{task.emoji || '📝'}</span>
+            <span className="text-2xl">{task.emoji || '📜'}</span>
             <h3 className="font-semibold text-ottoman-bordeaux flex-1">
               {task.title}
             </h3>

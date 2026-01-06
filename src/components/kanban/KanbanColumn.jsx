@@ -21,7 +21,7 @@ const KanbanColumn = ({ column, tasks, onTaskClick }) => {
           title: newTaskTitle,
           description: '',
           priority: 'normal',
-          emoji: '📝'
+          emoji: '📜' // Ferman emoji - Osmanlı temalı
         },
         column.id
       );

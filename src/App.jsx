@@ -4,6 +4,7 @@ import EbruSplash from './components/splash/EbruSplash';
 import KanbanBoard from './components/kanban/KanbanBoard';
 import RankDisplay from './components/gamification/RankDisplay';
 import Katip from './components/common/Katip';
+import AlarmManager from './components/notifications/AlarmManager';
 
 function App() {
   const [showSplash, setShowSplash] = useState(true);
@@ -30,6 +31,9 @@ function App() {
 
           {/* Katip Assistant */}
           <Katip />
+
+          {/* Alarm Manager */}
+          <AlarmManager />
 
           {/* Footer */}
           <footer className="text-center py-6 text-ottoman-bordeaux/50 text-sm font-medium">

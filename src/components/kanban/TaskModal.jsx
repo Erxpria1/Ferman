@@ -3,7 +3,25 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { X, Trash2, Save } from 'lucide-react';
 import { useTaskContext } from '../../context/TaskContext';
 
-const emojiOptions = ['📝', '⚡', '🎯', '💡', '🔥', '⭐', '🎨', '📚', '🏆', '🌟', '💎', '🎭'];
+// Osmanlı temalı emoji seti
+const emojiOptions = [
+  '🏛️', // Topkapı Sarayı
+  '☪️', // Hilal
+  '🌷', // Lale (Lale Devri)
+  '🌹', // Gül
+  '⚔️', // Kılıç
+  '👑', // Taç
+  '📿', // Tesbih
+  '🕌', // Cami
+  '🎭', // Karagöz-Hacivat
+  '🧿', // Nazar boncuğu
+  '☕', // Türk kahvesi
+  '📜', // Ferman
+  '🏺', // Çini
+  '🎨', // Hat sanatı
+  '💎', // Mücevher
+  '🗡️', // Hançer
+];
 
 const TaskModal = ({ task, onClose }) => {
   const { updateTask, deleteTask, moveTask } = useTaskContext();
@@ -11,7 +29,7 @@ const TaskModal = ({ task, onClose }) => {
     title: task.title || '',
     description: task.description || '',
     priority: task.priority || 'normal',
-    emoji: task.emoji || '📝',
+    emoji: task.emoji || '📜', // Ferman emoji - Osmanlı temalı
   });
 
   const handleSave = () => {
@@ -33,7 +51,10 @@ const TaskModal = ({ task, onClose }) => {
 
   return (
     <AnimatePresence>
-      <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
+      <div
+        className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50"
+        onClick={onClose}
+      >
         <motion.div
           initial={{ opacity: 0, scale: 0.9, rotateX: -10 }}
           animate={{ opacity: 1, scale: 1, rotateX: 0 }}
@@ -54,8 +75,12 @@ const TaskModal = ({ task, onClose }) => {
                   Ferman Detayı
                 </h2>
                 <button
-                  onClick={onClose}
-                  className="p-2 hover:bg-ottoman-crimson/10 rounded-full transition-colors"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    onClose();
+                  }}
+                  className="p-2 hover:bg-ottoman-crimson/10 rounded-full transition-colors z-10"
+                  title="Kapat"
                 >
                   <X className="w-6 h-6 text-ottoman-crimson" />
                 </button>

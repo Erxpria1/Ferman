@@ -7,6 +7,7 @@ const STORAGE_KEYS = {
   USER_RANK: 'ottoman_rank',
   COMPLETED_COUNT: 'ottoman_completed_count',
   SETTINGS: 'ottoman_settings',
+  ALARMS: 'ottoman_alarms',
 };
 
 export const storage = {
@@ -102,6 +103,27 @@ export const storage = {
       return true;
     } catch (error) {
       console.error('Error saving settings:', error);
+      return false;
+    }
+  },
+
+  // Alarm operations
+  getAlarms: () => {
+    try {
+      const alarms = localStorage.getItem(STORAGE_KEYS.ALARMS);
+      return alarms ? JSON.parse(alarms) : [];
+    } catch (error) {
+      console.error('Error loading alarms:', error);
+      return [];
+    }
+  },
+
+  saveAlarms: (alarms) => {
+    try {
+      localStorage.setItem(STORAGE_KEYS.ALARMS, JSON.stringify(alarms));
+      return true;
+    } catch (error) {
+      console.error('Error saving alarms:', error);
       return false;
     }
   },
