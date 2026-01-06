@@ -1,0 +1,20 @@
+{
+  "name": "Divan-ı Not - Sadrazam'ın Defteri",
+  "short_name": "Divan-ı Not",
+  "description": "Osmanlı temalı görev yöneticisi",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#FFF8DC",
+  "theme_color": "#FFD700",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "/vite.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ],
+  "categories": ["productivity", "utilities"],
+  "lang": "tr"
+}
