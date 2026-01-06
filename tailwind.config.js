@@ -15,6 +15,10 @@ export default {
           darkGold: '#B8860B',
           crimson: '#DC143C',
         },
+        parchment: {
+          light: '#F4E7D7',
+          dark: '#E5D4B8',
+        },
       },
       fontFamily: {
         heading: ['"Cinzel Decorative"', 'serif'],
