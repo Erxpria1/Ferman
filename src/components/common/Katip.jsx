@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { AnimatePresence, motion } from 'framer-motion';
 import { X, Lightbulb } from 'lucide-react';
 import { useTaskContext } from '../../context/TaskContext';
 
@@ -19,6 +19,9 @@ const Katip = () => {
   const [visible, setVisible] = useState(false);
   const [message, setMessage] = useState('');
   const [quote, setQuote] = useState('');
+  // Use the API key if needed for future AI features
+  // eslint-disable-next-line no-unused-vars
+  const apiKey = import.meta.env.VITE_GOOGLE_API_KEY;
 
   useEffect(() => {
     // Check for stale tasks (not updated in 3 days)

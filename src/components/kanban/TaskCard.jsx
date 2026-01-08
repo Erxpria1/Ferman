@@ -28,10 +28,10 @@ const TaskCard = ({ task, onClick, isDragging }) => {
     <div
       ref={setNodeRef}
       style={style}
-      className={`ottoman-card cursor-pointer hover:shadow-xl transition-shadow ${
+      className={`ottoman-card cursor-pointer hover:shadow-xl hover:-translate-y-1 transition-all duration-300 ${
         priorityColors[task.priority || 'normal']
-      } ${isDragging ? 'rotate-2' : ''}`}
-      onClick={onClick}
+      } ${isDragging ? 'rotate-2 scale-105 shadow-2xl z-50' : ''}`}
+      onClick={() => onClick(task, task.column)}
     >
       <div className="flex items-start gap-3">
         {/* Drag Handle */}

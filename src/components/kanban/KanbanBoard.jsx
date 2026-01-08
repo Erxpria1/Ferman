@@ -8,7 +8,7 @@ import {
   useSensor,
   useSensors,
 } from '@dnd-kit/core';
-import { arrayMove, SortableContext, sortableKeyboardCoordinates } from '@dnd-kit/sortable';
+import { SortableContext, sortableKeyboardCoordinates } from '@dnd-kit/sortable';
 import { useTaskContext } from '../../context/TaskContext';
 import KanbanColumn from './KanbanColumn';
 import TaskCard from './TaskCard';

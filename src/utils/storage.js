@@ -41,7 +41,7 @@ export const storage = {
     try {
       const rank = localStorage.getItem(STORAGE_KEYS.USER_RANK);
       return rank || 'Acemi Oğlanı';
-    } catch (error) {
+    } catch {
       return 'Acemi Oğlanı';
     }
   },
@@ -61,7 +61,7 @@ export const storage = {
     try {
       const count = localStorage.getItem(STORAGE_KEYS.COMPLETED_COUNT);
       return count ? parseInt(count, 10) : 0;
-    } catch (error) {
+    } catch {
       return 0;
     }
   },
@@ -92,7 +92,7 @@ export const storage = {
         sounds: true,
         language: 'tr'
       };
-    } catch (error) {
+    } catch {
       return { notifications: true, sounds: true, language: 'tr' };
     }
   },
