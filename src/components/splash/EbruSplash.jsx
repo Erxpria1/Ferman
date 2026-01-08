@@ -17,7 +17,7 @@ const EbruSplash = ({ onComplete }) => {
   }, [onComplete]);
 
   // Generate random positions for bubbles
-  const bubbles = Array.from({ length: 15 }, (_, i) => ({
+  const [bubbles] = useState(() => Array.from({ length: 15 }, (_, i) => ({
     id: i,
     x: Math.random() * 100,
     y: Math.random() * 100,
@@ -29,7 +29,7 @@ const EbruSplash = ({ onComplete }) => {
       'var(--ottoman-bordeaux)',
       'var(--ottoman-crimson)'
     ][Math.floor(Math.random() * 4)]
-  }));
+  })));
 
   return (
     <div className="fixed inset-0 ebru-container flex items-center justify-center overflow-hidden z-50">

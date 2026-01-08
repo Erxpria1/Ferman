@@ -12,24 +12,9 @@ export const useTaskContext = () => {
 };
 
 export const TaskProvider = ({ children }) => {
-  const [tasks, setTasks] = useState({
-    fermanlar: [],
-    islemde: [],
-    hazine: []
-  });
-  const [rank, setRank] = useState('Acemi Oğlanı');
-  const [completedCount, setCompletedCount] = useState(0);
-
-  // Load data from localStorage on mount
-  useEffect(() => {
-    const savedTasks = storage.getTasks();
-    const savedRank = storage.getRank();
-    const savedCount = storage.getCompletedCount();
-
-    setTasks(savedTasks);
-    setRank(savedRank);
-    setCompletedCount(savedCount);
-  }, []);
+  const [tasks, setTasks] = useState(() => storage.getTasks());
+  const [rank, setRank] = useState(() => storage.getRank());
+  const [completedCount, setCompletedCount] = useState(() => storage.getCompletedCount());
 
   // Save tasks whenever they change
   useEffect(() => {

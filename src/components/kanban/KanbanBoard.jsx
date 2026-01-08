@@ -8,7 +8,7 @@ import {
   useSensor,
   useSensors,
 } from '@dnd-kit/core';
-import { arrayMove, SortableContext, sortableKeyboardCoordinates } from '@dnd-kit/sortable';
+import { SortableContext, sortableKeyboardCoordinates } from '@dnd-kit/sortable';
 import { useTaskContext } from '../../context/TaskContext';
 import KanbanColumn from './KanbanColumn';
 import TaskCard from './TaskCard';
@@ -60,9 +60,14 @@ const KanbanBoard = () => {
       // Reordering within the same column
       const columnTasks = tasks[activeColumn];
       const oldIndex = columnTasks.findIndex(task => task.id === active.id);
-      const newIndex = columnTasks.findIndex(task => task.id === over.id);
+      let newIndex = columnTasks.findIndex(task => task.id === over.id);
 
-      if (oldIndex !== newIndex) {
+      // If dragging over the column container itself, move to end
+      if (newIndex === -1 && over.id === activeColumn) {
+        newIndex = columnTasks.length - 1;
+      }
+
+      if (oldIndex !== newIndex && newIndex !== -1) {
         reorderTasks(activeColumn, oldIndex, newIndex);
       }
     }

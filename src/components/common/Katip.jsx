@@ -78,10 +78,11 @@ const Katip = () => {
     <AnimatePresence>
       {visible && (
         <motion.div
-          className="fixed bottom-8 right-8 z-40 max-w-sm"
+          className="fixed bottom-8 right-8 z-40 max-w-sm cursor-pointer"
           initial={{ opacity: 0, x: 100, rotate: 10 }}
           animate={{ opacity: 1, x: 0, rotate: 0 }}
           exit={{ opacity: 0, x: 100, rotate: -10 }}
+          whileHover={{ scale: 1.05, rotate: -2 }}
           transition={{ type: 'spring', bounce: 0.4 }}
         >
           <div className="parchment gold-border rounded-xl shadow-2xl p-6 relative">
