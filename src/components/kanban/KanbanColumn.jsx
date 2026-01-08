@@ -81,8 +81,8 @@ const KanbanColumn = ({ column, tasks, onTaskClick }) => {
 
         {/* Empty State */}
         {tasks.length === 0 && !showInput && (
-          <div className="parchment rounded-lg p-8 text-center border-2 border-dashed border-ottoman-gold">
-            <p className="text-ottoman-bordeaux/50 font-medium">
+          <div className="parchment rounded-lg p-8 text-center border-2 border-dashed border-ottoman-gold min-h-[100px] flex items-center justify-center">
+            <p className="text-ottoman-bordeaux/50 font-medium italic">
               {column.id === 'fermanlar' && 'Ferman bekliyor...'}
               {column.id === 'islemde' && 'İşlem yok...'}
               {column.id === 'hazine' && 'Hazine boş...'}
@@ -94,25 +94,20 @@ const KanbanColumn = ({ column, tasks, onTaskClick }) => {
       {/* Add Task Button/Input */}
       <div className="mt-4">
         {showInput ? (
-          <div className="ottoman-card p-4">
+          <div className="ottoman-card p-4 animate-fadeIn shadow-xl ring-2 ring-ottoman-gold/20">
             <input
               type="text"
-              className="w-full px-4 py-2 border-2 border-ottoman-gold rounded-lg focus:outline-none focus:ring-2 focus:ring-ottoman-turquoise font-body"
+              className="w-full px-4 py-2 border-2 border-ottoman-gold rounded-lg focus:outline-none focus:ring-2 focus:ring-ottoman-turquoise font-body placeholder:text-ottoman-bordeaux/30"
               placeholder="Ferman yazın..."
               value={newTaskTitle}
               onChange={(e) => setNewTaskTitle(e.target.value)}
               onKeyDown={handleKeyPress}
-              onBlur={() => {
-                if (!newTaskTitle.trim()) {
-                  setShowInput(false);
-                }
-              }}
               autoFocus
             />
-            <div className="flex gap-2 mt-2">
+            <div className="flex gap-2 mt-3">
               <button
                 onClick={handleAddTask}
-                className="flex-1 ottoman-btn text-sm py-2"
+                className="flex-1 ottoman-btn text-sm py-2 shadow-md"
               >
                 Ekle
               </button>
@@ -121,7 +116,7 @@ const KanbanColumn = ({ column, tasks, onTaskClick }) => {
                   setShowInput(false);
                   setNewTaskTitle('');
                 }}
-                className="px-4 py-2 bg-gray-200 rounded-lg hover:bg-gray-300 transition-colors text-sm font-medium"
+                className="px-4 py-2 bg-gray-100 text-gray-600 rounded-lg hover:bg-gray-200 transition-colors text-sm font-medium"
               >
                 İptal
               </button>
@@ -130,10 +125,12 @@ const KanbanColumn = ({ column, tasks, onTaskClick }) => {
         ) : (
           <button
             onClick={() => setShowInput(true)}
-            className="w-full ottoman-card hover:bg-ottoman-turquoise/10 transition-colors p-4 flex items-center justify-center gap-2 group"
+            className="w-full py-4 rounded-lg border-2 border-dashed border-ottoman-gold/50 hover:border-ottoman-gold hover:bg-ottoman-gold/5 transition-all flex items-center justify-center gap-2 group text-ottoman-bordeaux/70 hover:text-ottoman-bordeaux shadow-sm hover:shadow-md"
           >
-            <Plus className="w-5 h-5 text-ottoman-turquoise group-hover:scale-110 transition-transform" />
-            <span className="font-medium text-ottoman-turquoise">
+            <div className="bg-ottoman-gold/20 p-1.5 rounded-full group-hover:bg-ottoman-gold group-hover:text-white transition-colors">
+              <Plus className="w-5 h-5 transition-transform" />
+            </div>
+            <span className="font-semibold">
               Yeni Ferman
             </span>
           </button>

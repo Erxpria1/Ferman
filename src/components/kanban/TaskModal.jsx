@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, Trash2, Save } from 'lucide-react';
 import { useTaskContext } from '../../context/TaskContext';
