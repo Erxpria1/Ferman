@@ -130,11 +130,12 @@ const KanbanColumn = ({ column, tasks, onTaskClick }) => {
         ) : (
           <button
             onClick={() => setShowInput(true)}
-            className="w-full ottoman-card hover:bg-ottoman-turquoise/10 transition-colors p-4 flex items-center justify-center gap-2 group"
+            className="w-full ottoman-card border-dashed hover:border-solid hover:bg-ottoman-turquoise/5 transition-all duration-300 p-4 flex items-center justify-center gap-2 group relative overflow-hidden"
           >
-            <Plus className="w-5 h-5 text-ottoman-turquoise group-hover:scale-110 transition-transform" />
-            <span className="font-medium text-ottoman-turquoise">
-              Yeni Ferman
+            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000" />
+            <Plus className="w-6 h-6 text-ottoman-turquoise group-hover:scale-110 group-hover:rotate-90 transition-transform duration-300" />
+            <span className="font-medium text-lg text-ottoman-turquoise font-heading">
+              Yeni Ferman Ekle
             </span>
           </button>
         )}

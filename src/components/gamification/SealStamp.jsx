@@ -5,14 +5,27 @@ const SealStamp = ({ show, onComplete }) => {
   const [isVisible, setIsVisible] = useState(show);
 
   useEffect(() => {
+    let showTimer;
+    let hideTimer;
+
     if (show) {
-      setIsVisible(true);
-      const timer = setTimeout(() => {
-        setIsVisible(false);
-        onComplete?.();
-      }, 2000);
-      return () => clearTimeout(timer);
+      // Use setTimeout to avoid synchronous state update in effect
+      showTimer = setTimeout(() => {
+        setIsVisible(true);
+        // Start another timer for hiding
+        hideTimer = setTimeout(() => {
+            setIsVisible(false);
+            onComplete?.();
+        }, 2000);
+      }, 0);
+    } else {
+        // Delay hiding too
+        showTimer = setTimeout(() => setIsVisible(false), 0);
     }
+    return () => {
+        clearTimeout(showTimer);
+        clearTimeout(hideTimer);
+    };
   }, [show, onComplete]);
 
   return (
@@ -94,32 +107,49 @@ const SealStamp = ({ show, onComplete }) => {
           </motion.div>
 
           {/* Confetti Particles */}
-          {Array.from({ length: 20 }).map((_, i) => (
-            <motion.div
-              key={i}
-              className="absolute w-2 h-2 rounded-full"
-              style={{
-                background: ['#FFD700', '#1ABC9C', '#DC143C', '#8B0000'][i % 4],
-                left: '50%',
-                top: '50%',
-              }}
-              initial={{ scale: 0, x: 0, y: 0 }}
-              animate={{
-                scale: [0, 1, 0],
-                x: (Math.random() - 0.5) * 400,
-                y: (Math.random() - 0.5) * 400,
-                rotate: Math.random() * 360,
-              }}
-              transition={{
-                duration: 1.5,
-                delay: 0.3 + Math.random() * 0.3,
-                ease: 'easeOut',
-              }}
-            />
-          ))}
+          <ConfettiParticles />
         </motion.div>
       )}
     </AnimatePresence>
+  );
+};
+
+const ConfettiParticles = () => {
+  const [particles] = useState(() => Array.from({ length: 20 }, (_, i) => ({
+    id: i,
+    color: ['#FFD700', '#1ABC9C', '#DC143C', '#8B0000'][i % 4],
+    x: (Math.random() - 0.5) * 400,
+    y: (Math.random() - 0.5) * 400,
+    rotate: Math.random() * 360,
+    delay: 0.3 + Math.random() * 0.3
+  })));
+
+  return (
+    <>
+      {particles.map((p) => (
+        <motion.div
+          key={p.id}
+          className="absolute w-2 h-2 rounded-full"
+          style={{
+            background: p.color,
+            left: '50%',
+            top: '50%',
+          }}
+          initial={{ scale: 0, x: 0, y: 0 }}
+          animate={{
+            scale: [0, 1, 0],
+            x: p.x,
+            y: p.y,
+            rotate: p.rotate,
+          }}
+          transition={{
+            duration: 1.5,
+            delay: p.delay,
+            ease: 'easeOut',
+          }}
+        />
+      ))}
+    </>
   );
 };
 

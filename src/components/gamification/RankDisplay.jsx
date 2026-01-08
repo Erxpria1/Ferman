@@ -53,12 +53,30 @@ const RankDisplay = ({ compact = false }) => {
   if (compact) {
     return (
       <motion.div
-        className={`flex items-center gap-2 px-4 py-2 rounded-full ${info.bgColor} border-2 ${info.borderColor}`}
+        className={`flex items-center gap-2 px-4 py-2 rounded-full ${info.bgColor} border-2 ${info.borderColor} cursor-help relative group`}
         whileHover={{ scale: 1.05 }}
       >
         <Icon className={`w-5 h-5 ${info.color}`} />
         <span className={`font-semibold ${info.color}`}>{rank}</span>
         <span className="text-sm text-gray-600">({completedCount})</span>
+
+        {/* Tooltip */}
+        <div className="absolute top-full right-0 mt-2 w-64 p-4 bg-white rounded-lg shadow-xl border-2 border-ottoman-gold opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-50">
+          <p className="font-heading text-ottoman-bordeaux mb-1">{info.description}</p>
+          {info.nextRank ? (
+            <div className="text-sm text-gray-600">
+              <p>Sonraki Rütbe: {info.nextRank}</p>
+              <div className="w-full bg-gray-200 rounded-full h-2 mt-2">
+                <div
+                  className="h-full bg-ottoman-turquoise rounded-full"
+                  style={{ width: `${Math.min(progress, 100)}%` }}
+                />
+              </div>
+            </div>
+          ) : (
+            <p className="text-sm text-ottoman-gold font-bold">En üst rütbedesiniz!</p>
+          )}
+        </div>
       </motion.div>
     );
   }
