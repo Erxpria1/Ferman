@@ -5,22 +5,22 @@ import { useTaskContext } from '../../context/TaskContext';
 
 // Osmanlı temalı emoji seti
 const emojiOptions = [
-  '🏛️', // Topkapı Sarayı
-  '☪️', // Hilal
-  '🌷', // Lale (Lale Devri)
-  '🌹', // Gül
-  '⚔️', // Kılıç
-  '👑', // Taç
-  '📿', // Tesbih
-  '🕌', // Cami
-  '🎭', // Karagöz-Hacivat
-  '🧿', // Nazar boncuğu
-  '☕', // Türk kahvesi
-  '📜', // Ferman
-  '🏺', // Çini
-  '🎨', // Hat sanatı
-  '💎', // Mücevher
-  '🗡️', // Hançer
+  { char: '🏛️', label: 'Topkapı Sarayı' },
+  { char: '☪️', label: 'Hilal' },
+  { char: '🌷', label: 'Lale' },
+  { char: '🌹', label: 'Gül' },
+  { char: '⚔️', label: 'Kılıç' },
+  { char: '👑', label: 'Taç' },
+  { char: '📿', label: 'Tesbih' },
+  { char: '🕌', label: 'Cami' },
+  { char: '🎭', label: 'Karagöz-Hacivat' },
+  { char: '🧿', label: 'Nazar boncuğu' },
+  { char: '☕', label: 'Türk kahvesi' },
+  { char: '📜', label: 'Ferman' },
+  { char: '🏺', label: 'Çini' },
+  { char: '🎨', label: 'Hat sanatı' },
+  { char: '💎', label: 'Mücevher' },
+  { char: '🗡️', label: 'Hançer' },
 ];
 
 const TaskModal = ({ task, onClose }) => {
@@ -31,6 +31,14 @@ const TaskModal = ({ task, onClose }) => {
     priority: task.priority || 'normal',
     emoji: task.emoji || '📜', // Ferman emoji - Osmanlı temalı
   });
+
+  useEffect(() => {
+    const handleEsc = (e) => {
+      if (e.key === 'Escape') onClose();
+    };
+    window.addEventListener('keydown', handleEsc);
+    return () => window.removeEventListener('keydown', handleEsc);
+  }, [onClose]);
 
   const handleSave = () => {
     updateTask(task.id, formData, task.column);
@@ -54,6 +62,9 @@ const TaskModal = ({ task, onClose }) => {
       <div
         className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50"
         onClick={onClose}
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="modal-title"
       >
         <motion.div
           initial={{ opacity: 0, scale: 0.9, rotateX: -10 }}
@@ -71,7 +82,7 @@ const TaskModal = ({ task, onClose }) => {
             {/* Modal Header */}
             <div className="p-6 border-b-2 border-ottoman-gold bg-gradient-to-b from-white to-transparent">
               <div className="flex items-center justify-between">
-                <h2 className="text-3xl font-heading text-ottoman-bordeaux text-shadow-ottoman">
+                <h2 id="modal-title" className="text-3xl font-heading text-ottoman-bordeaux text-shadow-ottoman">
                   Ferman Detayı
                 </h2>
                 <button
@@ -81,6 +92,7 @@ const TaskModal = ({ task, onClose }) => {
                   }}
                   className="p-2 hover:bg-ottoman-crimson/10 rounded-full transition-colors z-10"
                   title="Kapat"
+                  aria-label="Kapat"
                 >
                   <X className="w-6 h-6 text-ottoman-crimson" />
                 </button>
@@ -95,17 +107,19 @@ const TaskModal = ({ task, onClose }) => {
                   İkon Seçin
                 </label>
                 <div className="flex gap-2 flex-wrap">
-                  {emojiOptions.map((emoji) => (
+                  {emojiOptions.map(({ char, label }) => (
                     <button
-                      key={emoji}
-                      onClick={() => setFormData(prev => ({ ...prev, emoji }))}
+                      key={char}
+                      onClick={() => setFormData(prev => ({ ...prev, emoji: char }))}
                       className={`text-3xl p-2 rounded-lg transition-all ${
-                        formData.emoji === emoji
+                        formData.emoji === char
                           ? 'bg-ottoman-gold scale-110 shadow-lg'
                           : 'bg-white hover:bg-ottoman-gold/20'
                       }`}
+                      aria-label={`${label} emojisini seç`}
+                      title={label}
                     >
-                      {emoji}
+                      {char}
                     </button>
                   ))}
                 </div>

@@ -1,5 +1,4 @@
 import { useSortable } from '@dnd-kit/sortable';
-import { CSS } from '@dnd-kit/utilities';
 import { GripVertical } from 'lucide-react';
 
 const TaskCard = ({ task, onClick, isDragging }) => {
@@ -13,7 +12,7 @@ const TaskCard = ({ task, onClick, isDragging }) => {
   } = useSortable({ id: task.id });
 
   const style = {
-    transform: CSS.Transform.toString(transform),
+    transform: transform ? `translate3d(${transform.x}px, ${transform.y}px, 0) scaleX(${transform.scaleX}) scaleY(${transform.scaleY})` : undefined,
     transition,
     opacity: isSortableDragging ? 0.5 : 1,
   };
