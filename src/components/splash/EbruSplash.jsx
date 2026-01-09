@@ -3,6 +3,22 @@ import { useEffect, useState } from 'react';
 
 const EbruSplash = ({ onComplete }) => {
   const [showText, setShowText] = useState(false);
+  const [bubbles] = useState(() => {
+    // Generate bubbles lazily during initialization
+    return Array.from({ length: 15 }, (_, i) => ({
+      id: i,
+      x: Math.random() * 100,
+      y: Math.random() * 100,
+      size: 20 + Math.random() * 80,
+      delay: Math.random() * 0.5,
+      color: [
+        'var(--ottoman-turquoise)',
+        'var(--ottoman-gold)',
+        'var(--ottoman-bordeaux)',
+        'var(--ottoman-crimson)'
+      ][Math.floor(Math.random() * 4)]
+    }));
+  });
 
   useEffect(() => {
     // Show text after bubbles animate
@@ -15,21 +31,6 @@ const EbruSplash = ({ onComplete }) => {
       clearTimeout(completeTimer);
     };
   }, [onComplete]);
-
-  // Generate random positions for bubbles
-  const bubbles = Array.from({ length: 15 }, (_, i) => ({
-    id: i,
-    x: Math.random() * 100,
-    y: Math.random() * 100,
-    size: 20 + Math.random() * 80,
-    delay: Math.random() * 0.5,
-    color: [
-      'var(--ottoman-turquoise)',
-      'var(--ottoman-gold)',
-      'var(--ottoman-bordeaux)',
-      'var(--ottoman-crimson)'
-    ][Math.floor(Math.random() * 4)]
-  }));
 
   return (
     <div className="fixed inset-0 ebru-container flex items-center justify-center overflow-hidden z-50">
