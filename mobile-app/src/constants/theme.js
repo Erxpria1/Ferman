@@ -1,19 +1,18 @@
 export const COLORS = {
   ottoman: {
-    turquoise: '#1ABC9C',
-    bordeaux: '#8B0000',
-    gold: '#FFD700',
-    cream: '#FFF8DC',
-    darkGold: '#B8860B',
+    turquoise: '#45B69C',
+    gold: '#D4AF37',
+    bordeaux: '#800020',
+    cream: '#F5F5DC',
     crimson: '#DC143C',
-  },
-  parchment: {
-    light: '#F4E7D7',
-    dark: '#E5D4B8',
+    dark: '#2C3E50',
   },
 };
 
 export const EMOJIS = {
-  ottoman: ['🏛️', '☪️', '🌷', '🌹', '⚔️', '👑', '📿', '🕌', '🎭', '🧿', '☕', '📜', '🏺', '🎨', '💎', '🗡️'],
   default: '📜',
+  process: '⚙️',
+  done: '💎',
+  delete: '🗑️',
+  add: '➕',
 };

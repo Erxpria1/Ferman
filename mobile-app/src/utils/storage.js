@@ -32,7 +32,7 @@ export const storage = {
     try {
       const rank = await AsyncStorage.getItem(KEYS.RANK);
       return rank || 'Acemi Oğlanı';
-    } catch (error) {
+    } catch {
       return 'Acemi Oğlanı';
     }
   },
@@ -41,7 +41,7 @@ export const storage = {
     try {
       await AsyncStorage.setItem(KEYS.RANK, rank);
       return true;
-    } catch (error) {
+    } catch {
       return false;
     }
   },
@@ -50,7 +50,7 @@ export const storage = {
     try {
       const count = await AsyncStorage.getItem(KEYS.COMPLETED_COUNT);
       return count ? parseInt(count, 10) : 0;
-    } catch (error) {
+    } catch {
       return 0;
     }
   },
@@ -59,7 +59,7 @@ export const storage = {
     try {
       await AsyncStorage.setItem(KEYS.COMPLETED_COUNT, count.toString());
       return true;
-    } catch (error) {
+    } catch {
       return false;
     }
   },
