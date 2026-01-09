@@ -1,23 +1,16 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Bell, Plus, X, Clock, Trash2 } from 'lucide-react';
 import storage from '../../utils/storage';
 
 const AlarmManager = () => {
   const [showAlarmPanel, setShowAlarmPanel] = useState(false);
-  const [alarms, setAlarms] = useState([]);
+  const [alarms, setAlarms] = useState(() => storage.getAlarms());
   const [newAlarm, setNewAlarm] = useState({
     time: '',
     title: '',
     enabled: true,
   });
-
-  // Load alarms on mount
-  useEffect(() => {
-    const savedAlarms = storage.getAlarms();
-    setAlarms(savedAlarms);
-    requestNotificationPermission();
-  }, []);
 
   // Request notification permission
   const requestNotificationPermission = async () => {
@@ -26,30 +19,23 @@ const AlarmManager = () => {
     }
   };
 
-  // Check alarms every minute
+  // Load alarms on mount
   useEffect(() => {
-    const interval = setInterval(() => {
-      checkAlarms();
-    }, 60000); // Check every minute
+    // Only request permission on mount, alarms are lazy loaded
+    requestNotificationPermission();
+  }, []);
 
-    // Also check immediately
-    checkAlarms();
-
-    return () => clearInterval(interval);
-  }, [alarms]);
-
-  const checkAlarms = () => {
-    const now = new Date();
-    const currentTime = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
-
-    alarms.forEach((alarm) => {
-      if (alarm.enabled && alarm.time === currentTime && !alarm.triggered) {
-        triggerAlarm(alarm);
-      }
+  const updateAlarmTriggered = useCallback((alarmId) => {
+    setAlarms(currentAlarms => {
+      const updatedAlarms = currentAlarms.map((alarm) =>
+        alarm.id === alarmId ? { ...alarm, triggered: true } : alarm
+      );
+      storage.saveAlarms(updatedAlarms);
+      return updatedAlarms;
     });
-  };
+  }, []);
 
-  const triggerAlarm = (alarm) => {
+  const triggerAlarm = useCallback((alarm) => {
     // Show browser notification
     if (Notification.permission === 'granted') {
       new Notification('⏰ Divan-ı Not Hatırlatıcı', {
@@ -61,20 +47,35 @@ const AlarmManager = () => {
     }
 
     // Play sound (optional - you can add a sound file)
-    const audio = new Audio('data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACBhYqFbF1fdJivrJBhNjVgodDbq2EcBj+a2/LDciUFLIHO8tiJNwgZaLvt559NEAxQp+PwtmMcBjiR1/LMeSwFJHfH8N2QQAoUXrTp66hVFApGn+DyvmwhBSuBzvLZiTYHGWa77OyhTBELUKng77RgGwU7k9ryz3k0BySAzvLaizsIGGS56+mjUBQLTqXh8LdjHAU+ldz0yX8xCC5/zPLaiDwHHGi87OihUxQLTqXh8LdjHAU+ldz0yX8xCC5/zPLaiDwHHGi87OihUxQLTqXh8LdjHAU+ldz0yX8xCC5/zPLaiDwHHGi87OihUxQLTqXh8LdjHAU+ldz0yX8xCC5/zPLaiDwHHGi87OihUxQLTqXh8LdjHAU+ldz0yX8xCC5/zPLaiDwHHGi87OihUxQLTqXh8LdjHAU+ldz0yX8xCC5/zPLaiDwHHGi87OihUxQLTqXh8LdjHAU+ldz0yX8xCC5/zPLaiDwHHGi87OihUxQLTqXh8LdjHAU+ldz0yX8xCC5/zPLaiDwHHGi87OihUxQLTqXh8LdjHAU+ldz0yX8xCC5/zPLaiDwHHGi87OihUxQLTqXh8LdjHAU+ldz0yX8xCC5/zPLaiDwHHGi87OihUxQLTqXh8LdjHAU+ldz0yX8xCC5/zPLaiDwHHGi87OihUxQLTqXh8LdjHAU+ldz0yX8xCC5/zPLaiDwHHGi87OihUxQLTqXh8LdjHAU+ldz0yX8xCC5/zPLaiDwHHGi87OihUxQLTqXh8LdjHAU+ldz0yX8xCC5/zPLaiDwHHGi87OihUxQLTqXh8LdjHAU+ldz0yX8xCC5/zPLaiDwHHGi87OihUxQLTqXh8LdjHAU+ldz0yX8xCC5/zPLaiDwHHGi87OihUxQLTqXh8LdjHAU+ldz0yX8xCC5/zPLaiDwHHGi87OihUxQLTqXh8LdjHAU+ldz0yX8xCC5/zPLaiDwHHGi87OihUxQLTqXh8LdjHAU+ldz0yX8xCC5/zPLaiDwHHGi87OihUxQLTqXh8LdjHAU+ldz0yX8xCC5/zPLaiDwHHGi87OihUxQLTqXh8LdjHAU+ldz0yX8xCC5/zPLaiDwHHGi87OihUxQLTqXh8LdjHAU+ldz0yX8xCC5/zPLaiDwHHGi87OihU');
+    const audio = new Audio('data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACBhYqFbF1fdJivrJBhNjVgodDbq2EcBj+a2/LDciUFLIHO8tiJNwgZaLvt559NEAxQp+PwtmMcBjiR1/LMeSwFJHfH8N2QQAoUXrTp66hVFApGn+DyvmwhBSuBzvLZiTYHGWa77OyhTBELUKng77RgGwU7k9ryz3k0BySAzvLaizsIGGS56+mjUBQLTqXh8LdjHAU+ldz0yX8xCC5/zPLaiDwHHGi87OihUxQLTqXh8LdjHAU+ldz0yX8xCC5/zPLaiDwHHGi87OihUxQLTqXh8LdjHAU+ldz0yX8xCC5/zPLaiDwHHGi87OihUxQLTqXh8LdjHAU+ldz0yX8xCC5/zPLaiDwHHGi87OihUxQLTqXh8LdjHAU+ldz0yX8xCC5/zPLaiDwHHGi87OihUxQLTqXh8LdjHAU+ldz0yX8xCC5/zPLaiDwHHGi87OihUxQLTqXh8LdjHAU+ldz0yX8xCC5/zPLaiDwHHGi87OihUxQLTqXh8LdjHAU+ldz0yX8xCC5/zPLaiDwHHGi87OihUxQLTqXh8LdjHAU+ldz0yX8xCC5/zPLaiDwHHGi87OihUxQLTqXh8LdjHAU+ldz0yX8xCC5/zPLaiDwHHGi87OihUxQLTqXh8LdjHAU+ldz0yX8xCC5/zPLaiDwHHGi87OihUxQLTqXh8LdjHAU+ldz0yX8xCC5/zPLaiDwHHGi87OihUxQLTqXh8LdjHAU+ldz0yX8xCC5/zPLaiDwHHGi87OihUxQLTqXh8LdjHAU+ldz0yX8xCC5/zPLaiDwHHGi87OihUxQLTqXh8LdjHAU+ldz0yX8xCC5/zPLaiDwHHGi87OihUxQLTqXh8LdjHAU+ldz0yX8xCC5/zPLaiDwHHGi87OihUxQLTqXh8LdjHAU+ldz0yX8xCC5/zPLaiDwHHGi87OihUxQLTqXh8LdjHAU+ldz0yX8xCC5/zPLaiDwHHGi87OihUxQLTqXh8LdjHAU+ldz0yX8xCC5/zPLaiDwHHGi87OihUxQLTqXh8LdjHAU+ldz0yX8xCC5/zPLaiDwHHGi87OihUxQLTqXh8LdjHAU+ldz0yX8xCC5/zPLaiDwHHGi87OihUxQLTqXh8LdjHAU+ldz0yX8xCC5/zPLaiDwHHGi87OihUxQLTqXh8LdjHAU+ldz0yX8xCC5/zPLaiDwHHGi87OihUxQLTqXh8LdjHAU+ldz0yX8xCC5/zPLaiDwHHGi87OihUxQLTqXh8LdjHAU+ldz0yX8xCC5/zPLaiDwHHGi87OihUxQLTqXh8LdjHAU+ldz0yX8xCC5/zPLaiDwHHGi87OihUxQLTqXh8LdjHAU+ldz0yX8xCC5/zPLaiDwHHGi87OihUxQLTqXh8LdjHAU+ldz0yX8xCC5/zPLaiDwHHGi87OihUxQLTqXh8LdjHAU+ldz0yX8xCC5/zPLaiDwHHGi87OihUxQLTqXh8LdjHAU+ldz0yX8xCC5/zPLaiDwHHGi87OihUxQLTqXh8LdjHAU+ldz0yX8xCC5/zPLaiDwHHGi87OihUxQLTqXh8LdjHAU+ldz0yX8xCC5/zPLaiDwHHGi87OihUxQLTqXh8LdjHAU+ldz0yX8xCC5/zPLaiDwHHGi87OihUxQLTqXh8LdjHAU+ldz0yX8xCC5/zPLaiDwHHGi87OihUxQLTqXh8LdjHAU+ldz0yX8xCC5/zPLaiDwHHGi87OihUxQLTqXh8LdjHAU+ldz0yX8xCC5/zPLaiDwHHGi87OihUxQLTqXh8LdjHAU+ldz0yX8xCC5/zPLaiDwHHGi87OihUxQLTqXh8LdjHAU+ldz0yX8xCC5/zPLaiDwHHGi87OihUxQLTqXh8LdjHAU+ldz0yX8xCC5/zPLaiDwHHGi87OihUxQLTqXh8LdjHAU+ldz0yX8xCC5/zPLaiDwHHGi87OihUxQLTqXh8LdjHAU+ldz0yX8xCC5/zPLaiDwHHGi87OihUxQLTqXh8LdjHAU+ldz0yX8xCC5/zPLaiDwHHGi87OihUxQLTqXh8LdjHAU+ldz0yX8xCC5/zPLaiDwHHGi87OihUxQLTqXh8LdjHAU+ldz0yX8xCC5/zPLaiDwHHGi87OihUxQLTqXh8LdjHAU+ldz0yX8xCC5/zPLaiDwHHGi87OihUxQLTqXh8LdjHAU+ldz0yX8xCC5/zPLaiDwHHGi87OihUxQLTqXh8LdjHAU+ldz0yX8xCC5/zPLaiDwHHGi87OihUxQLTqXh8LdjHAU+ldz0yX8xCC5/zPLaiDwHHGi87OihUxQLTqXh8LdjHAU+ldz0yX8xCC5/zPLaiDwHHGi87OihUxQLTqXh8LdjHAU+ldz0yX8xCC5/zPLaiDwHHGi87OihUxQLTqXh8LdjHAU+ldz0yX8xCC5/zPLaiDwHHGi87OihUxQLTqXh8LdjHAU+ldz0yX8xCC5/zPLaiDwHHGi87OihUxQLTqXh8LdjHAU+ldz0yX8xCC5/zPLaiDwHHGi87OihUxQLTqXh8LdjHAU+ldz0yX8xCC5/zPLaiDwHHGi87OihUxQLTqXh8LdjHAU+ldz0yX8xCC5/zPLaiDwHHGi87OihUxQLTqXh8LdjHAU+ldz0yX8xCC5/zPLaiDwHHGi87OihUxQLTqXh8LdjHAU+ldz0yX8xCC5/zPLaiDwHHGi87OihUxQLTqXh8LdjHAU+ldz0yX8xCC5/zPLaiDwHHGi87OihUxQLTqXh8LdjHAU+ldz0yX8xCC5/zPLaiDwHHGi87OihUxQLTqXh8LdjHAU+ldz0yX8xCC5/zPLaiDwHHGi87OihUxQLTqXh8LdjHAU+ldz0yX8xCC5/zPLaiDwHHGi87OihUxQLTqXh8LdjHAU+ldz0yX8xCC5/zPLaiDwHHGi87OihUxQLTqXh8LdjHAU+ldz0yX8xCC5/zPLaiDwHHGi87OihUxQLTqXh8LdjHAU+ldz0yX8xCC5/zPLaiDwHHGi87OihUxQLTqXh8LdjHAU+ldz0yX8xCC5/zPLaiDwHHGi87OihUxQLTqXh8LdjHAU+ldz0yX8xCC5/zPLaiDwHHGi87OihUxQLTqXh8LdjHAU+ldz0yX8xCC5/zPLaiDwHHGi87OihUxQLTqXh8LdjHAU+ldz0yX8xCC5/zPLaiDwHHGi87OihUxQLTqXh8LdjHAU+ldz0yX8xCC5/zPLaiDwHHGi87OihUxQLTqXh8LdjHAU+ldz0yX8xCC5/zPLaiDwHHGi87OihUxQLTqXh8LdjHAU+ldz0yX8xCC5/zPLaiDwHHGi87OihUxQLTqXh8LdjHAU+ldz0yX8xCC5/zPLaiDwHHGi87OihUxQLTqXh8LdjHAU+ldz0yX8xCC5/zPLaiDwHHGi87OihUxQLTqXh8LdjHAU+ldz0yX8xCC5/zPLaiDwHHGi87OihUxQLTqXh8LdjHAU+ldz0yX8xCC5/zPLaiDwHHGi87OihUxQLTqXh8LdjHAU+ldz0yX8xCC5/zPLaiDwHHGi87OihUxQLTqXh8LdjHAU+ldz0yX8xCC5/zPLaiDwHHGi87OihUxQLTqXh8LdjHAU+ldz0yX8xCC5/zPLaiDwHHGi87OihUxQLTqXh8LdjHAU+ldz0yX8xCC5/zPLaiDwHHGi87OihUxQLTqXh8LdjHAU+ldz0yX8xCC5/zPLaiDwHHGi87OihUxQLTqXh8LdjHAU+ldz0yX8xCC5/zPLaiDwHHGi87OihUxQLTqXh8LdjHAU+ldz0yX8xCC5/zPLaiDwHHGi87OihUxQLTqXh8LdjHAU+ldz0yX8xCC5/zPLaiDwHHGi87OihUxQLTqXh8LdjHAU+ldz0yX8xCC5/zPLaiDwHHGi87OihUxQLTqXh8LdjHAU+ldz0yX8xCC5/zPLaiDwHHGi87OihUxQLTqXh8LdjHAU+ldz0yX8xCC5/zPLaiDwHHGi87OihUxQLTqXh8LdjHAU+ldz0yX8xCC5/zPLaiDwHHGi87OihUxQLTqXh8LdjHAU+ldz0yX8xCC5/zPLaiDwHHGi87OihUxQLTqXh8LdjHAU+ldz0yX8xCC5/zPLaiDwHHGi87OihUxQLTqXh8LdjHAU+ldz0yX8xCC5/zPLaiDwHHGi87OihUxQLTqXh8LdjHAU+ldz0yX8xCC5/zPLaiDwHHGi87OihUxQLTqXh8LdjHAU+ldz0yX8xCC5/zPLaiDwHHGi87OihUxQLTqXh8LdjHAU+ldz0yX8xCC5/zPLaiDwHHGi87OihUxQLTqXh8LdjHAU+ldz0yX8xCC5/zPLaiDwHHGi87OihUxQLTqXh8LdjHAU+ldz0yX8xCC5/zPLaiDwHHGi87OihU');
     audio.play().catch(() => {});
 
     // Mark as triggered
     updateAlarmTriggered(alarm.id);
-  };
+  }, [updateAlarmTriggered]);
 
-  const updateAlarmTriggered = (alarmId) => {
-    const updatedAlarms = alarms.map((alarm) =>
-      alarm.id === alarmId ? { ...alarm, triggered: true } : alarm
-    );
-    setAlarms(updatedAlarms);
-    storage.saveAlarms(updatedAlarms);
-  };
+  const checkAlarms = useCallback(() => {
+    const now = new Date();
+    const currentTime = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
+
+    alarms.forEach((alarm) => {
+      if (alarm.enabled && alarm.time === currentTime && !alarm.triggered) {
+        triggerAlarm(alarm);
+      }
+    });
+  }, [alarms, triggerAlarm]);
+
+  // Check alarms every minute
+  useEffect(() => {
+    const interval = setInterval(() => {
+      checkAlarms();
+    }, 60000); // Check every minute
+
+    // Also check immediately
+    checkAlarms();
+
+    return () => clearInterval(interval);
+  }, [checkAlarms]);
 
   const addAlarm = () => {
     if (!newAlarm.time || !newAlarm.title) {

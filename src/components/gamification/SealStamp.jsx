@@ -2,18 +2,52 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useEffect, useState } from 'react';
 
 const SealStamp = ({ show, onComplete }) => {
-  const [isVisible, setIsVisible] = useState(show);
+  const [isVisible, setIsVisible] = useState(false);
+  const [confetti, setConfetti] = useState(() => {
+    return Array.from({ length: 20 }).map((_, i) => ({
+      id: i,
+      color: ['#FFD700', '#1ABC9C', '#DC143C', '#8B0000'][i % 4],
+      x: (Math.random() - 0.5) * 400,
+      y: (Math.random() - 0.5) * 400,
+      rotate: Math.random() * 360,
+      delay: 0.3 + Math.random() * 0.3
+    }));
+  });
 
   useEffect(() => {
     if (show) {
-      setIsVisible(true);
-      const timer = setTimeout(() => {
+      // Sync visibility with show prop
+      const timer = setTimeout(() => setIsVisible(true), 0);
+
+      const completeTimer = setTimeout(() => {
         setIsVisible(false);
         onComplete?.();
       }, 2000);
-      return () => clearTimeout(timer);
+
+      return () => {
+        clearTimeout(timer);
+        clearTimeout(completeTimer);
+      };
     }
   }, [show, onComplete]);
+
+  // Regenerate confetti when showing
+  useEffect(() => {
+      if (show) {
+        // Delay setting confetti to avoid sync state update
+        const t = setTimeout(() => {
+           setConfetti(Array.from({ length: 20 }).map((_, i) => ({
+            id: i,
+            color: ['#FFD700', '#1ABC9C', '#DC143C', '#8B0000'][i % 4],
+            x: (Math.random() - 0.5) * 400,
+            y: (Math.random() - 0.5) * 400,
+            rotate: Math.random() * 360,
+            delay: 0.3 + Math.random() * 0.3
+          })));
+        }, 0);
+        return () => clearTimeout(t);
+      }
+  }, [show]);
 
   return (
     <AnimatePresence>
@@ -94,25 +128,25 @@ const SealStamp = ({ show, onComplete }) => {
           </motion.div>
 
           {/* Confetti Particles */}
-          {Array.from({ length: 20 }).map((_, i) => (
+          {confetti.map((particle) => (
             <motion.div
-              key={i}
+              key={particle.id}
               className="absolute w-2 h-2 rounded-full"
               style={{
-                background: ['#FFD700', '#1ABC9C', '#DC143C', '#8B0000'][i % 4],
+                background: particle.color,
                 left: '50%',
                 top: '50%',
               }}
               initial={{ scale: 0, x: 0, y: 0 }}
               animate={{
                 scale: [0, 1, 0],
-                x: (Math.random() - 0.5) * 400,
-                y: (Math.random() - 0.5) * 400,
-                rotate: Math.random() * 360,
+                x: particle.x,
+                y: particle.y,
+                rotate: particle.rotate,
               }}
               transition={{
                 duration: 1.5,
-                delay: 0.3 + Math.random() * 0.3,
+                delay: particle.delay,
                 ease: 'easeOut',
               }}
             />
