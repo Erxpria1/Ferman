@@ -8,6 +8,7 @@ import {
   TouchableOpacity,
   SafeAreaView,
   StatusBar,
+  Alert,
 } from 'react-native';
 import { storage } from './src/utils/storage';
 import { COLORS, EMOJIS } from './src/constants/theme';
@@ -82,6 +83,24 @@ export default function App() {
     await storage.saveRank(newRank);
   };
 
+  const confirmDelete = (taskId, column) => {
+    Alert.alert(
+      "Fermanı Yırt",
+      "Bu fermanı silmek istediğine emin misin? Bu işlem geri alınamaz.",
+      [
+        {
+          text: "Vazgeç",
+          style: "cancel"
+        },
+        {
+          text: "Yırt At",
+          onPress: () => deleteTask(taskId, column),
+          style: "destructive"
+        }
+      ]
+    );
+  };
+
   const deleteTask = async (taskId, column) => {
     const updatedTasks = {
       ...tasks,
@@ -102,6 +121,8 @@ export default function App() {
           <TouchableOpacity
             style={[styles.actionButton, { backgroundColor: COLORS.ottoman.gold }]}
             onPress={() => moveTask(task.id, column, 'islemde')}
+            accessibilityLabel="Fermanı işleme al"
+            accessibilityHint="Fermanı işlemde sütununa taşır"
           >
             <Text style={styles.actionButtonText}>⚙️</Text>
           </TouchableOpacity>
@@ -110,13 +131,17 @@ export default function App() {
           <TouchableOpacity
             style={[styles.actionButton, { backgroundColor: COLORS.ottoman.crimson }]}
             onPress={() => moveTask(task.id, column, 'hazine')}
+            accessibilityLabel="Fermanı hazineye kaldır"
+            accessibilityHint="Fermanı hazine sütununa taşır"
           >
             <Text style={styles.actionButtonText}>💎</Text>
           </TouchableOpacity>
         )}
         <TouchableOpacity
           style={[styles.actionButton, { backgroundColor: '#ff4444' }]}
-          onPress={() => deleteTask(task.id, column)}
+          onPress={() => confirmDelete(task.id, column)}
+          accessibilityLabel="Fermanı sil"
+          accessibilityHint="Fermanı kalıcı olarak siler"
         >
           <Text style={styles.actionButtonText}>🗑️</Text>
         </TouchableOpacity>
@@ -146,8 +171,14 @@ export default function App() {
           value={newTaskText}
           onChangeText={setNewTaskText}
           onSubmitEditing={addTask}
+          accessibilityLabel="Yeni ferman metni"
         />
-        <TouchableOpacity style={styles.addButton} onPress={addTask}>
+        <TouchableOpacity
+          style={styles.addButton}
+          onPress={addTask}
+          accessibilityLabel="Yeni ferman ekle"
+          accessibilityHint="Yazdığınız fermanı listeye ekler"
+        >
           <Text style={styles.addButtonText}>+ Ekle</Text>
         </TouchableOpacity>
       </View>
