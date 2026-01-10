@@ -32,6 +32,14 @@ const TaskCard = ({ task, onClick, isDragging }) => {
         priorityColors[task.priority || 'normal']
       } ${isDragging ? 'rotate-2' : ''}`}
       onClick={onClick}
+      role="button"
+      tabIndex={0}
+      onKeyDown={(e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          onClick();
+        }
+      }}
     >
       <div className="flex items-start gap-3">
         {/* Drag Handle */}
@@ -40,6 +48,7 @@ const TaskCard = ({ task, onClick, isDragging }) => {
           {...listeners}
           className="cursor-grab active:cursor-grabbing pt-1"
           onClick={(e) => e.stopPropagation()}
+          aria-label="Görev kartını taşı"
         >
           <GripVertical className="w-5 h-5 text-ottoman-bordeaux/30 hover:text-ottoman-bordeaux/60" />
         </div>
