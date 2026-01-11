@@ -24,21 +24,40 @@ const TaskCard = ({ task, onClick, isDragging }) => {
     high: 'border-l-4 border-l-ottoman-crimson',
   };
 
+  const priorityLabels = {
+    low: 'Düşük öncelik',
+    normal: 'Normal öncelik',
+    high: 'Yüksek öncelik',
+  };
+
+  const handleKeyDown = (e) => {
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+      onClick();
+    }
+  };
+
   return (
     <div
       ref={setNodeRef}
       style={style}
-      className={`ottoman-card cursor-pointer hover:shadow-xl transition-shadow ${
+      role="button"
+      tabIndex={0}
+      onKeyDown={handleKeyDown}
+      className={`ottoman-card cursor-pointer hover:shadow-xl transition-shadow focus-visible:ring-2 focus-visible:ring-ottoman-turquoise focus-visible:outline-none ${
         priorityColors[task.priority || 'normal']
       } ${isDragging ? 'rotate-2' : ''}`}
       onClick={onClick}
     >
+      <span className="sr-only">{priorityLabels[task.priority || 'normal']}</span>
       <div className="flex items-start gap-3">
         {/* Drag Handle */}
         <div
           {...attributes}
           {...listeners}
-          className="cursor-grab active:cursor-grabbing pt-1"
+          role="button"
+          aria-label="Görevi taşı"
+          className="cursor-grab active:cursor-grabbing pt-1 focus-visible:ring-2 focus-visible:ring-ottoman-turquoise focus-visible:outline-none rounded"
           onClick={(e) => e.stopPropagation()}
         >
           <GripVertical className="w-5 h-5 text-ottoman-bordeaux/30 hover:text-ottoman-bordeaux/60" />
