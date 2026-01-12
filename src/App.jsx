@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { TaskProvider } from './context/TaskContext';
 import EbruSplash from './components/splash/EbruSplash';
 import KanbanBoard from './components/kanban/KanbanBoard';
