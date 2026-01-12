@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Bell, Plus, X, Clock, Trash2 } from 'lucide-react';
 import storage from '../../utils/storage';
 
-const AlarmManager = () => {
+const AlarmManager = ({ headless = false }) => {
   const [showAlarmPanel, setShowAlarmPanel] = useState(false);
   const [alarms, setAlarms] = useState([]);
   const [newAlarm, setNewAlarm] = useState({
@@ -112,6 +112,8 @@ const AlarmManager = () => {
     setAlarms(updatedAlarms);
     storage.saveAlarms(updatedAlarms);
   };
+
+  if (headless) return null;
 
   return (
     <>
