@@ -32,14 +32,31 @@ const TaskCard = ({ task, onClick, isDragging }) => {
         priorityColors[task.priority || 'normal']
       } ${isDragging ? 'rotate-2' : ''}`}
       onClick={onClick}
+      role="button"
+      tabIndex={0}
+      onKeyDown={(e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          onClick();
+        }
+      }}
+      aria-label={`${task.title}, Öncelik: ${
+        task.priority === 'high'
+          ? 'Yüksek'
+          : task.priority === 'low'
+          ? 'Düşük'
+          : 'Normal'
+      }`}
     >
       <div className="flex items-start gap-3">
         {/* Drag Handle */}
         <div
           {...attributes}
           {...listeners}
-          className="cursor-grab active:cursor-grabbing pt-1"
+          className="cursor-grab active:cursor-grabbing pt-1 outline-none focus-visible:ring-2 focus-visible:ring-ottoman-gold rounded"
           onClick={(e) => e.stopPropagation()}
+          aria-label="Görevi taşı"
+          role="button"
         >
           <GripVertical className="w-5 h-5 text-ottoman-bordeaux/30 hover:text-ottoman-bordeaux/60" />
         </div>
