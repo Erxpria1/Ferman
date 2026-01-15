@@ -24,20 +24,39 @@ const TaskCard = ({ task, onClick, isDragging }) => {
     high: 'border-l-4 border-l-ottoman-crimson',
   };
 
+  const priorityLabels = {
+    low: 'Düşük öncelik',
+    normal: 'Normal öncelik',
+    high: 'Yüksek öncelik',
+  };
+
   return (
     <div
       ref={setNodeRef}
       style={style}
+      role="button"
+      tabIndex={0}
+      onKeyDown={(e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          onClick();
+        }
+      }}
       className={`ottoman-card cursor-pointer hover:shadow-xl transition-shadow ${
         priorityColors[task.priority || 'normal']
       } ${isDragging ? 'rotate-2' : ''}`}
       onClick={onClick}
     >
+      <span className="sr-only">
+        {priorityLabels[task.priority || 'normal']}
+      </span>
       <div className="flex items-start gap-3">
         {/* Drag Handle */}
         <div
           {...attributes}
           {...listeners}
+          role="button"
+          aria-label="Görevi taşı"
           className="cursor-grab active:cursor-grabbing pt-1"
           onClick={(e) => e.stopPropagation()}
         >
