@@ -24,6 +24,19 @@ const TaskCard = ({ task, onClick, isDragging }) => {
     high: 'border-l-4 border-l-ottoman-crimson',
   };
 
+  const priorityLabels = {
+    low: 'Düşük öncelik',
+    normal: 'Normal öncelik',
+    high: 'Yüksek öncelik',
+  };
+
+  const handleKeyDown = (e) => {
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+      onClick();
+    }
+  };
+
   return (
     <div
       ref={setNodeRef}
@@ -32,7 +45,14 @@ const TaskCard = ({ task, onClick, isDragging }) => {
         priorityColors[task.priority || 'normal']
       } ${isDragging ? 'rotate-2' : ''}`}
       onClick={onClick}
+      role="button"
+      tabIndex={0}
+      onKeyDown={handleKeyDown}
     >
+      <span className="sr-only">
+        {priorityLabels[task.priority || 'normal']}
+      </span>
+
       <div className="flex items-start gap-3">
         {/* Drag Handle */}
         <div
@@ -40,6 +60,7 @@ const TaskCard = ({ task, onClick, isDragging }) => {
           {...listeners}
           className="cursor-grab active:cursor-grabbing pt-1"
           onClick={(e) => e.stopPropagation()}
+          aria-label="Görevi taşı"
         >
           <GripVertical className="w-5 h-5 text-ottoman-bordeaux/30 hover:text-ottoman-bordeaux/60" />
         </div>
@@ -47,7 +68,7 @@ const TaskCard = ({ task, onClick, isDragging }) => {
         {/* Task Content */}
         <div className="flex-1">
           <div className="flex items-start gap-2 mb-2">
-            <span className="text-2xl">{task.emoji || '📜'}</span>
+            <span className="text-2xl" role="img" aria-label="Görev ikonu">{task.emoji || '📜'}</span>
             <h3 className="font-semibold text-ottoman-bordeaux flex-1">
               {task.title}
             </h3>
